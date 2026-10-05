@@ -1,3 +1,10 @@
 * text=auto eol=lf
 assets/project-template/mvnw text eol=lf
 *.cmd text eol=crlf
+
+# Left out of release archives: the zip holds only what an installed skill needs
+.github/ export-ignore
+tests/ export-ignore
+.editorconfig export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore

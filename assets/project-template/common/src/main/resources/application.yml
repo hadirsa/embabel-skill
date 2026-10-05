@@ -1,4 +1,4 @@
-# Embabel configuration. See references/CONFIGURATION.md in the embabel-skill for the full property list.
+# Embabel configuration. See references/CONFIGURATION.md in the embabeler skill for the full property list.
 
 spring:
   config:

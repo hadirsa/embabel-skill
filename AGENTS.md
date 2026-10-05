@@ -1,4 +1,4 @@
-# AGENTS.md — maintaining embabel-skill
+# AGENTS.md — maintaining embabeler
 
 This repository is an Agent Skill for building Embabel agents. If you change it, keep it trustworthy: the whole point is that an agent can rely on what it says.
 

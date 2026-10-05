@@ -1,5 +1,5 @@
 {
-  "name": "embabel-skill",
+  "name": "embabeler",
   "version": "0.1.0",
   "description": "An Agent Skill for building Embabel agents on the JVM: project scaffolding, verified references, and a static plan checker.",
   "private": true,

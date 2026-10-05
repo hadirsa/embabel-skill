@@ -39,7 +39,7 @@ test('parseLatestRelease prefers <release>, else the highest plain version', () 
 });
 
 test('creates a project with every token resolved, a runnable mvnw and a plan that checks clean', () => {
-  const out = mkdtempSync(join(tmpdir(), 'embabel-skill-'));
+  const out = mkdtempSync(join(tmpdir(), 'embabeler-'));
   execFileSync('node', [script, 'trip-planner', 'com.acme.trip', '--output-dir', out], { encoding: 'utf8' });
   const dir = join(out, 'trip-planner');
 
@@ -62,7 +62,7 @@ test('creates a project with every token resolved, a runnable mvnw and a plan th
 });
 
 test('refuses to overwrite a non-empty directory and rejects bad input without a stack trace', () => {
-  const out = mkdtempSync(join(tmpdir(), 'embabel-skill-'));
+  const out = mkdtempSync(join(tmpdir(), 'embabeler-'));
   execFileSync('node', [script, 'demo-agent', 'com.acme.demo', '--output-dir', out]);
   const again = spawnSync('node', [script, 'demo-agent', 'com.acme.demo', '--output-dir', out], { encoding: 'utf8' });
   assert.equal(again.status, 1);
@@ -79,7 +79,7 @@ test('refuses to overwrite a non-empty directory and rejects bad input without a
 });
 
 test('agent name defaults from the project name and can be overridden', () => {
-  const out = mkdtempSync(join(tmpdir(), 'embabel-skill-'));
+  const out = mkdtempSync(join(tmpdir(), 'embabeler-'));
   execFileSync('node', [script, 'support-desk-agent', 'com.acme.desk', '--output-dir', out]);
   assert.ok(existsSync(join(out, 'support-desk-agent/src/main/java/com/acme/desk/agent/SupportDeskAgent.java')));
   execFileSync('node', [script, 'other', 'com.acme.other', '--agent-name', 'Concierge', '--output-dir', out]);
@@ -87,7 +87,7 @@ test('agent name defaults from the project name and can be overridden', () => {
 });
 
 test('the Kotlin variant generates Kotlin sources plus the shared Java plan check', () => {
-  const out = mkdtempSync(join(tmpdir(), 'embabel-skill-'));
+  const out = mkdtempSync(join(tmpdir(), 'embabeler-'));
   execFileSync('node', [script, 'trip-planner', 'com.acme.trip', '--kotlin', '--output-dir', out]);
   const dir = join(out, 'trip-planner');
   assert.ok(existsSync(join(dir, 'src/main/kotlin/com/acme/trip/agent/TripPlannerAgent.kt')));
@@ -104,7 +104,7 @@ test('the Kotlin variant generates Kotlin sources plus the shared Java plan chec
 });
 
 test('--gradle swaps the Maven build for a Gradle one, for Java and Kotlin', () => {
-  const out = mkdtempSync(join(tmpdir(), 'embabel-skill-'));
+  const out = mkdtempSync(join(tmpdir(), 'embabeler-'));
   for (const [name, extra] of [['gj', []], ['gk', ['--kotlin']]]) {
     execFileSync('node', [script, name, 'com.acme.demo', '--gradle', ...extra, '--output-dir', out]);
     const dir = join(out, name);
@@ -122,7 +122,7 @@ test('--gradle swaps the Maven build for a Gradle one, for Java and Kotlin', () 
 });
 
 test('every generated project gets the plan check', () => {
-  const out = mkdtempSync(join(tmpdir(), 'embabel-skill-'));
+  const out = mkdtempSync(join(tmpdir(), 'embabeler-'));
   execFileSync('node', [script, 'demo', 'com.acme.demo', '--output-dir', out]);
   const plan = join(out, 'demo/src/test/java/com/acme/demo/plan');
   assert.ok(existsSync(join(plan, 'AgentPlanCheck.java')));

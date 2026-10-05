@@ -1,6 +1,16 @@
-# embabel-skill
+# Embabeler
+
+[![CI](https://github.com/hadirsa/embabeler/actions/workflows/ci.yml/badge.svg)](https://github.com/hadirsa/embabeler/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Agent Skill](https://img.shields.io/badge/Agent%20Skill-spec-8A2BE2)](https://agentskills.io/specification)
+[![Embabel](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhadirsa%2Fembabeler%2Fmain%2Fversions.json&query=%24.embabelAgentVersion&label=Embabel&color=orange)](references/VERSIONS.md)
+[![Spring Boot](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhadirsa%2Fembabeler%2Fmain%2Fversions.json&query=%24.springBootVersion&label=Spring%20Boot&color=6DB33F&logo=springboot&logoColor=white)](references/VERSIONS.md)
+[![Java | Kotlin](https://img.shields.io/badge/Java%20%7C%20Kotlin-JVM-007396)](references/VERSIONS.md)
+[![Maven | Gradle](https://img.shields.io/badge/build-Maven%20%7C%20Gradle-C71A36)](references/VERSIONS.md)
 
 An [Agent Skill](https://agentskills.io/specification) that teaches coding agents (Claude Code, Cursor, Copilot, Codex and others) to build [Embabel](https://github.com/embabel/embabel-agent) agents correctly: goal-driven AI agents on the JVM with Java or Kotlin, Spring Boot, and Maven or Gradle.
+
+**The Embabel skill that proves what it says:** every code sample compiles, every generated project passes its tests, and a plan check fails the build when an agent can never reach its goal.
 
 ## Why this exists
 
@@ -8,18 +18,26 @@ Embabel plans from method signatures: each `@Action`'s parameter types are its p
 
 This skill gives an agent:
 
-- **A verified starting project**, in Java or Kotlin: Embabel 1.5.2 on Spring Boot 4.1 with an agent, domain types, a tool, and unit and integration tests that need no LLM and no API key.
+- **A verified starting project**, in Java or Kotlin, on a [tested Embabel and Spring Boot combination](references/VERSIONS.md), with an agent, domain types, a tool, and unit and integration tests that need no LLM and no API key.
 - **Conventions that prevent the stalls**, with the reason behind each, in a short `SKILL.md` plus on-demand references.
 - **A plan check that runs as a test** (`AgentPlanTest`). It reads the agent model Embabel builds at startup, so it works the same for Java and Kotlin, and fails the build on what the compiler cannot see: a missing or unreachable goal, a dependency cycle, a condition used in `pre` that no action declares in `post`. It also warns about ambiguous producers and weak flow types. It extends Embabel's own startup validation, which accepts some flows that can never finish. `scripts/add-plan-check.mjs` adds it to existing projects.
-- **Compiled, tested examples** (the cookbook) of routing, conditions, states, domain tools, review loops and human-in-the-loop.
+- **Compiled, tested examples** (the cookbook) of routing, conditions, states, domain tools, review loops and human-in-the-loop, plus deliberately broken agents that really get stuck at runtime, with tests proving the plan check reports them (in Java and Kotlin).
+- **Pitfalls with evidence**: each entry in [PITFALLS.md](references/PITFALLS.md) says whether it was reproduced, read from the framework source, or taken from the docs, so you know how far to trust it.
 - **A "no invented code" guard**: every Java snippet in the documentation is either an excerpt of code that is compiled and tested here, or is marked as copied from an official source (and checked against it).
+- **Kept current with Embabel**: versions live in one file, CI builds the scaffold in five variants (Java, Kotlin, Maven, Gradle, with and without the cookbook) on every push, and a weekly job rebuilds it against the newest Embabel release and checks the copied official snippets against their sources.
 
 ## Install
 
-Skills are folders with a `SKILL.md`. Put this repository where your tool looks for skills, for example for Claude Code:
+With the [`skills` CLI](https://github.com/vercel-labs/skills), which installs into Claude Code, Cursor, Codex and other agents:
 
 ```bash
-git clone https://github.com/hadirsa/embabel-skill ~/.claude/skills/embabel-skill
+npx skills add hadirsa/embabeler
+```
+
+Or by hand: skills are folders with a `SKILL.md`, so put this repository where your tool looks for skills, for example for Claude Code:
+
+```bash
+git clone https://github.com/hadirsa/embabeler ~/.claude/skills/embabeler
 ```
 
 Other tools use their own skills directory (for example `.cursor/skills/` or `.agents/skills/` in a project); see your tool's documentation. Requirements: Java 25 (or 21+ with --java-version 21), Node.js 20+, network access to Maven Central. An LLM API key is only needed to run an agent for real: the generated project switches providers with Maven profiles for OpenAI, Anthropic and any OpenAI-compatible endpoint, and runs on a local Ollama model with no key at all.
@@ -41,10 +59,10 @@ node scripts/create-project.mjs trip-planner com.acme.trip --output-dir "$PWD"
 cd trip-planner && ./mvnw test            # includes AgentPlanTest (./gradlew test with --gradle)
 
 # Add the plan check to an existing Embabel project (Java or Kotlin)
-node /path/to/embabel-skill/scripts/add-plan-check.mjs /path/to/project com.acme.yourpackage
+node /path/to/embabeler/scripts/add-plan-check.mjs /path/to/project com.acme.yourpackage
 
 # Quick static check of Java sources, no build needed
-node /path/to/embabel-skill/scripts/check-plan.mjs
+node /path/to/embabeler/scripts/check-plan.mjs
 ```
 
 ## What is in here

@@ -10,3 +10,6 @@ target/
 .env
 .env.*
 !.env.sample
+
+# Gradle caches from local builds of the template
+.gradle/

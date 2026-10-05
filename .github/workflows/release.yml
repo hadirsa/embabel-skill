@@ -1,0 +1,95 @@
+name: Release
+
+# Push a tag such as v0.1.0 to publish a release. The tag must match the version in
+# package.json and SKILL.md, and CHANGELOG.md must have a section for it.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Version, changelog and script tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Tag matches package.json, SKILL.md and CHANGELOG.md
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          PACKAGE="$(node -p "require('./package.json').version")"
+          SKILL="$(sed -n 's/^  version: "\(.*\)"$/\1/p' SKILL.md)"
+          [ "$VERSION" = "$PACKAGE" ] || { echo "package.json is $PACKAGE, tag is $VERSION"; exit 1; }
+          [ "$VERSION" = "$SKILL" ] || { echo "SKILL.md metadata.version is $SKILL, tag is $VERSION"; exit 1; }
+          grep -q "^## $VERSION\$" CHANGELOG.md || { echo "CHANGELOG.md has no '## $VERSION' section"; exit 1; }
+      - run: npm test
+      - run: node scripts/sync-versions-in-docs.mjs --check
+
+  scaffold:
+    name: Scaffold builds and passes its tests (${{ matrix.variant }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        variant: [java-with-cookbook, kotlin-with-pitfalls, gradle-java-with-cookbook]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - uses: gradle/actions/setup-gradle@v5
+        if: startsWith(matrix.variant, 'gradle-')
+      - run: |
+          case "${{ matrix.variant }}" in
+            java-with-cookbook) node scripts/verify-scaffold.mjs --with-cookbook ;;
+            kotlin-with-pitfalls) node scripts/verify-scaffold.mjs --kotlin ;;
+            gradle-java-with-cookbook) node scripts/verify-scaffold.mjs --gradle --with-cookbook ;;
+          esac
+
+  release:
+    name: Publish the GitHub release
+    needs: [check, scaffold]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build the skill zip
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          git archive --format=zip --prefix=embabeler/ -o "embabeler-$VERSION.zip" "$GITHUB_REF_NAME"
+      - name: Write the release notes
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          {
+            node -e '
+              const v = require("./versions.json");
+              console.log(`**Verified with** Embabel ${v.embabelAgentVersion}, Spring Boot ${v.springBootVersion}, Java ${v.javaVersion} (checked ${v.verifiedOn}).`);
+            '
+            echo
+            awk -v heading="## $VERSION" '$0 == heading { found = 1; next } found && /^## / { exit } found' CHANGELOG.md
+            echo
+            echo '**Install**'
+            echo
+            echo '```bash'
+            echo 'npx skills add hadirsa/embabeler'
+            echo '```'
+            echo
+            echo "Or download \`embabeler-$VERSION.zip\` below and unzip it into your tool's skills folder (it contains only the skill, without tests and CI)."
+          } > notes.md
+          cat notes.md
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" "embabeler-$VERSION.zip" --title "Embabeler $VERSION" --notes-file notes.md --verify-tag

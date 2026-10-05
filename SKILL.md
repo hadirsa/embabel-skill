@@ -1,5 +1,5 @@
 ---
-name: embabel-skill
+name: embabeler
 description: "Builds, extends and tests Embabel agents: goal-driven AI agents on the JVM with Java or Kotlin, Spring Boot, and Maven or Gradle. Creates a ready-to-run, tested project (Embabel 1.5.x on Spring Boot 4), explains how Embabel plans from @Agent/@Action/@AchievesGoal method signatures, and checks agent flows for planner problems with a test that reads Embabel's own agent model. Use whenever the user mentions Embabel, embabel-agent, @Agent or @Action or @AchievesGoal, GOAP agents on the JVM, or wants an AI agent with tools, typed LLM output, tests without an LLM, or an MCP-exposed agent in Java or Kotlin, even if they do not name the framework."
 license: Apache-2.0
 compatibility: "Needs Java 25 (21+ works with --java-version 21), Node.js 20+ and network access to Maven Central. An LLM API key is only needed to run an agent for real, never for the tests."
@@ -9,7 +9,7 @@ metadata:
   verified-with: "Embabel 1.5.2, Spring Boot 4.1.0"
 ---
 
-# Embabel skill
+# Embabeler
 
 Embabel agents are Spring Boot applications where **the plan is inferred from method signatures**: each `@Action`'s parameter types are its preconditions and its return type is its effect, and the planner chains actions to reach the `@AchievesGoal` action. Most mistakes compile fine and then stall at runtime. This skill gives you a verified starting project, the conventions that avoid those stalls, and a checker for the ones the compiler cannot see.
 
@@ -83,7 +83,7 @@ From the project directory:
 
 It must pass. Besides the unit and integration tests it runs `AgentPlanTest`, which reads the agent model Embabel builds (so it understands Java and Kotlin exactly) and **fails** on a missing goal, a goal that can never be reached (dependency cycle or broken type chain), or a condition used in `pre` that no action declares in `post`. It prints warnings for ambiguous producers, unreachable actions and weak `String` flow types, and info notes such as inputs the caller must supply. Read that report; errors must be fixed, warnings deserve a decision.
 
-For a quick look without a build, `node /path/to/embabel-skill/scripts/check-plan.mjs` runs a static version of the same rules on Java sources (not Kotlin). Use `--json` for machine-readable output and `--strict` to fail on warnings.
+For a quick look without a build, `node /path/to/embabeler/scripts/check-plan.mjs` runs a static version of the same rules on Java sources (not Kotlin). Use `--json` for machine-readable output and `--strict` to fail on warnings.
 
 If the project's own tests fail only on startup with `ClassNotFoundException` for Spring AI classes, it is the Spring Boot version, not your code. See [references/PITFALLS.md](references/PITFALLS.md).
 

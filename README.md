@@ -8,7 +8,7 @@
 [![Java | Kotlin](https://img.shields.io/badge/Java%20%7C%20Kotlin-JVM-007396)](references/VERSIONS.md)
 [![Maven | Gradle](https://img.shields.io/badge/build-Maven%20%7C%20Gradle-C71A36)](references/VERSIONS.md)
 
-An [Agent Skill](https://agentskills.io/specification) that teaches coding agents (Claude Code, Cursor, Copilot, Codex and others) to build [Embabel](https://github.com/embabel/embabel-agent) agents correctly: goal-driven AI agents on the JVM with Java or Kotlin, Spring Boot, and Maven or Gradle.
+**Embabeler** is an [Agent Skill](https://agentskills.io/specification) that teaches coding agents (Claude Code, Cursor, Copilot, Codex and others) to build [Embabel](https://github.com/embabel/embabel-agent) agents correctly: goal-driven AI agents on the JVM with Java or Kotlin, Spring Boot, and Maven or Gradle.
 
 **The Embabel skill that proves what it says:** every code sample compiles, every generated project passes its tests, and a plan check fails the build when an agent can never reach its goal.
 
@@ -16,7 +16,7 @@ An [Agent Skill](https://agentskills.io/specification) that teaches coding agent
 
 Embabel plans from method signatures: each `@Action`'s parameter types are its preconditions, its return type is its effect, and the planner chains actions to the `@AchievesGoal`. That is powerful, and it means many mistakes compile and then stall at runtime. Agents asked to "write an Embabel agent" from memory also get imports and APIs wrong, and the official templates lag the releases (at the time of writing the Java template pins Embabel 0.3.5 on Spring Boot 3.5, which does not work with 1.5.x).
 
-This skill gives an agent:
+Embabeler gives an agent:
 
 - **A verified starting project**, in Java or Kotlin, on a [tested Embabel and Spring Boot combination](references/VERSIONS.md), with an agent, domain types, a tool, and unit and integration tests that need no LLM and no API key.
 - **Conventions that prevent the stalls**, with the reason behind each, in a short `SKILL.md` plus on-demand references.

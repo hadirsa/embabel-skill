@@ -1,0 +1,18 @@
+{
+  "name": "embabel-skill",
+  "version": "0.1.0",
+  "description": "An Agent Skill for building Embabel agents on the JVM: project scaffolding, verified references, and a static plan checker.",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check:plan": "node scripts/check-plan.mjs",
+    "check:versions": "node scripts/check-versions.mjs",
+    "check:official-snippets": "node scripts/check-official-snippets.mjs",
+    "verify:scaffold": "node scripts/verify-scaffold.mjs --with-cookbook"
+  }
+}

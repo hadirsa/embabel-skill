@@ -1,0 +1,17 @@
+{
+  "embabelAgentVersion": "1.5.2",
+  "springBootVersion": "4.1.0",
+  "javaVersion": "25",
+  "mavenWrapperVersion": "3.9.6",
+  "gradleVersion": "9.8.0",
+  "kotlinVersion": "2.3.21",
+  "foojayResolverVersion": "1.0.0",
+  "verifiedOn": "2026-10-05",
+  "notes": {
+    "embabelAgentVersion": "Latest Embabel release verified to build and pass the scaffold tests. Check https://github.com/embabel/embabel-agent/releases before bumping.",
+    "springBootVersion": "Embabel 1.5.x is built on Spring Boot 4.x / Spring AI 2.x. Spring Boot 3.5.x does NOT work with it (missing Spring AI auto-configuration classes).",
+    "javaVersion": "Default target for generated projects (current LTS). Embabel itself is built for Java 21, so --java-version 21 also works.",
+    "kotlinVersion": "Gradle Kotlin projects only (Maven takes it from the Spring Boot parent). Keep it equal to the kotlin.version managed by the Spring Boot version above.",
+    "gradleVersion": "Gradle wrapper in assets/project-template/gradle. Change it with ./gradlew wrapper --gradle-version <x> and copy the wrapper files back."
+  }
+}

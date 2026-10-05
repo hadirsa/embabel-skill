@@ -1,0 +1,20 @@
+# Build output
+target/
+build/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+*.log
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Secrets: never commit real keys. Only .env.sample is tracked.
+.env
+.env.*
+!.env.sample
+
+# AI tooling local state
+.claude/

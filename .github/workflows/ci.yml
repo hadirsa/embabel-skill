@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly canary: does the newest Embabel release still work with the scaffold?
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  node-tests:
+    name: Script and documentation tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm test
+      - run: node scripts/sync-versions-in-docs.mjs --check
+
+  scaffold:
+    name: Scaffold builds and passes its tests (${{ matrix.variant }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [java, java-with-cookbook, kotlin-with-pitfalls, gradle-java-with-cookbook, gradle-kotlin-with-pitfalls]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - uses: gradle/actions/setup-gradle@v5
+        if: startsWith(matrix.variant, 'gradle-')
+      - name: Generate the project and run its tests
+        run: |
+          case "${{ matrix.variant }}" in
+            java) node scripts/verify-scaffold.mjs ;;
+            java-with-cookbook) node scripts/verify-scaffold.mjs --with-cookbook ;;
+            kotlin-with-pitfalls) node scripts/verify-scaffold.mjs --kotlin ;;
+            gradle-java-with-cookbook) node scripts/verify-scaffold.mjs --gradle --with-cookbook ;;
+            gradle-kotlin-with-pitfalls) node scripts/verify-scaffold.mjs --gradle --kotlin ;;
+          esac
+
+  canary:
+    name: Canary against the latest Embabel release
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - name: Official snippets still match their sources?
+        run: node scripts/check-official-snippets.mjs
+      - name: Newer release available?
+        run: node scripts/check-versions.mjs
+      - name: Do the Java and Kotlin scaffolds still pass on the latest release?
+        run: |
+          LATEST="$(curl -s https://repo1.maven.org/maven2/com/embabel/agent/embabel-agent-starter/maven-metadata.xml | sed -n 's:.*<release>\(.*\)</release>.*:\1:p')"
+          node scripts/verify-scaffold.mjs --with-cookbook --embabel-version "$LATEST"
+          node scripts/verify-scaffold.mjs --kotlin --embabel-version "$LATEST"

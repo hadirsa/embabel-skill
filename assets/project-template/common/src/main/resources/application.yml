@@ -1,0 +1,31 @@
+# Embabel configuration. See references/CONFIGURATION.md in the embabel-skill for the full property list.
+
+spring:
+  config:
+    # Local secrets: KEY=VALUE lines in ./.env (never committed), so runs from an IDE see them too.
+    # Real environment variables take precedence. Maven still needs them exported to pick a provider profile.
+    import: "optional:file:.env[.properties]"
+
+embabel:
+  # Pick the default model by name or by role. Uncomment and set to a model your provider offers.
+  # For the openai-custom-models profile, also uncomment default-llm: the shipped default is a model
+  # that provider may not know.
+  #models:
+  #  default-llm: "${LLM_MODEL:gpt-4o-mini}"
+  #  # Roles let actions ask for "best" or "cheapest" without hard-coding a model:
+  #  llms:
+  #    best: <model-name>
+  #    cheapest: <model-name>
+  agent:
+    platform:
+      models:
+        openai:
+          custom:
+            # OpenAI-compatible endpoint (profile openai-custom-models): set OPENAI_CUSTOM_API_KEY and
+            # OPENAI_CUSTOM_BASE_URL (ending in /v1) in .env. Only the models listed here are registered.
+            models: "${LLM_MODEL:gpt-4o-mini}"
+
+logging:
+  level:
+    # Show what the planner and LLM calls are doing while developing. DEBUG shows more.
+    com.embabel.agent: INFO

@@ -1,0 +1,12 @@
+node_modules/
+*.log
+.DS_Store
+.idea/
+.vscode/
+target/
+# Local state of AI tools
+.claude/
+.serena/
+.env
+.env.*
+!.env.sample

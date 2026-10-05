@@ -33,6 +33,8 @@ node scripts/create-project.mjs trip-planner com.acme.trip --output-dir "$PWD/..
 cd ../trip-planner && ./mvnw test
 ```
 
+To see the output without installing anything, browse [embabeler-sample-agent-demo](https://github.com/hadirsa/embabeler-sample-agent-demo), a project generated with Embabeler 0.1.0 (Java, Maven, Embabel 1.5.2). It is a snapshot; generate your own for the current versions.
+
 ## Requirements
 
 <!-- versions:start -->

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Embabeler: Agent Skill for Embabel agents</title>
+<meta name="description" content="An Agent Skill for scaffolding, testing and plan-checking Embabel agents on the JVM (Java or Kotlin, Spring Boot, Maven or Gradle).">
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1b1f24; --muted: #59636e; --line: #d8dee4;
+    --card: #f6f8fa; --accent: #c2410c; --code-bg: #0f172a; --code-fg: #e2e8f0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --line: #30363d;
+      --card: #161b22; --accent: #fb923c; --code-bg: #010409; --code-fg: #e6edf3;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: var(--accent); }
+  header, main, footer { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+  nav { display: flex; gap: 20px; flex-wrap: wrap; padding: 20px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  nav .brand { font-weight: 700; color: var(--fg); text-decoration: none; margin-right: auto; }
+  nav a { text-decoration: none; }
+  .hero { padding: 56px 0 32px; }
+  h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.15; margin: 0 0 16px; }
+  .lead { font-size: 1.2rem; color: var(--muted); margin: 0 0 24px; }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .badges img { height: 20px; }
+  .buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--line); text-decoration: none; font-weight: 600; color: var(--fg); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  section { padding: 32px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 1.6rem; margin: 0 0 12px; }
+  h3 { font-size: 1.1rem; margin: 20px 0 6px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  .card h3 { margin-top: 0; }
+  pre { background: var(--code-bg); color: var(--code-fg); padding: 14px 16px; border-radius: 8px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+  p code, li code, td code { background: var(--card); border: 1px solid var(--line); padding: 1px 5px; border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  .err { color: #f87171; } .warn { color: #fbbf24; }
+  footer { padding: 32px 16px 56px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  @media (max-width: 520px) { .hero { padding-top: 32px; } }
+</style>
+</head>
+<body>
+<header>
+  <nav>
+    <a class="brand" href="#">Embabeler</a>
+    <a href="#quick-start">Quick start</a>
+    <a href="#features">Features</a>
+    <a href="#plan-check">Plan check</a>
+    <a href="#scaffold">Scaffold</a>
+    <a href="https://github.com/hadirsa/embabeler">GitHub</a>
+  </nav>
+  <div class="hero">
+    <h1>Embabel agents that are checked before they run</h1>
+    <p class="lead">An <a href="https://agentskills.io/specification">Agent Skill</a> for scaffolding, testing and plan-checking <a href="https://github.com/embabel/embabel-agent">Embabel</a> agents on the JVM: Java or Kotlin, Spring Boot, Maven or Gradle. Works with Claude Code, Cursor, Copilot, Codex and other agents that load skills.</p>
+    <div class="badges">
+      <a href="https://github.com/hadirsa/embabeler/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/hadirsa/embabeler/actions/workflows/ci.yml/badge.svg"></a>
+      <a href="https://github.com/hadirsa/embabeler/blob/main/LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-blue.svg"></a>
+      <a href="https://github.com/hadirsa/embabeler/blob/main/references/VERSIONS.md"><img alt="Embabel version" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhadirsa%2Fembabeler%2Fmain%2Fversions.json&amp;query=%24.embabelAgentVersion&amp;label=Embabel&amp;color=orange"></a>
+      <a href="https://github.com/hadirsa/embabeler/blob/main/references/VERSIONS.md"><img alt="Spring Boot version" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhadirsa%2Fembabeler%2Fmain%2Fversions.json&amp;query=%24.springBootVersion&amp;label=Spring%20Boot&amp;color=6DB33F"></a>
+    </div>
+    <div class="buttons">
+      <a class="btn primary" href="#quick-start">Get started</a>
+      <a class="btn" href="https://github.com/hadirsa/embabeler">View on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="quick-start">
+    <h2>Quick start</h2>
+    <p>Install the skill:</p>
+    <pre><code>npx skills add hadirsa/embabeler</code></pre>
+    <p>Then ask your agent for what you want, for example <em>"Create an Embabel agent that triages support tickets, with tests."</em></p>
+    <p>Or install by hand for Claude Code:</p>
+    <pre><code>git clone https://github.com/hadirsa/embabeler ~/.claude/skills/embabeler</code></pre>
+    <p>Or generate a project directly, from the skill's directory:</p>
+    <pre><code>node scripts/create-project.mjs trip-planner com.acme.trip --output-dir "$PWD/.."
+cd ../trip-planner &amp;&amp; ./mvnw test</code></pre>
+    <h3>Requirements</h3>
+    <ul>
+      <li>Java 25 by default. Java 21 or newer works with <code>--java-version 21</code>.</li>
+      <li>Node.js 20 or newer. The scripts use Node built-ins only.</li>
+      <li>Network access to Maven Central.</li>
+      <li>An LLM API key is only needed to run an agent for real. The generated project has Maven profiles for OpenAI, Anthropic and OpenAI-compatible endpoints, and runs on a local Ollama model with no key.</li>
+    </ul>
+  </section>
+
+  <section id="features">
+    <h2>Features</h2>
+    <div class="grid">
+      <div class="card"><h3>Verified scaffold</h3><p>Generates a runnable project with an agent, domain types, a tool, and unit and integration tests that need no LLM and no API key.</p></div>
+      <div class="card"><h3>Plan check</h3><p><code>AgentPlanTest</code> fails the build when an agent can never reach its goal, which the compiler cannot catch.</p></div>
+      <div class="card"><h3>Tested references</h3><p>Every Java snippet in the docs is compiled and tested here, or marked as copied from an official source and checked against it.</p></div>
+      <div class="card"><h3>Cookbook and pitfalls</h3><p>Tested examples of routing, conditions, states, domain tools, review loops and human-in-the-loop, plus deliberately broken agents.</p></div>
+      <div class="card"><h3>Kept current</h3><p>CI builds the scaffold in five variants on every push, and a weekly job rebuilds it against the newest Embabel release.</p></div>
+    </div>
+  </section>
+
+  <section id="plan-check">
+    <h2>Plan check</h2>
+    <p>Embabel plans from method signatures: an <code>@Action</code>'s parameter types are its preconditions, its return type is its effect, and the planner chains actions to the <code>@AchievesGoal</code>. Many mistakes compile and then stall at runtime.</p>
+    <p><code>AgentPlanTest</code> reads the agent model Embabel builds at startup, so it works for Java and Kotlin. It fails the build on a missing or unreachable goal, a dependency cycle, or a condition used in <code>pre</code> that no action declares in <code>post</code>. It warns about ambiguous producers and weak flow types.</p>
+    <p>Example, from the deliberately broken cycle agent in the cookbook (output of the static checker):</p>
+<pre><code><span class="err">ERROR</span>   UNREACHABLE_GOAL  CyclePitfallAgent.java:38
+         Goal action write() can never run: Outline, Research is produced
+         only by actions that cannot run themselves (a dependency cycle
+         or missing link).
+<span class="warn">WARNING</span> UNREACHABLE_ACTION  CyclePitfallAgent.java:27
+         Action outline() can never run: waiting for Research.
+<span class="warn">WARNING</span> UNREACHABLE_ACTION  CyclePitfallAgent.java:32
+         Action research() can never run: waiting for Outline.
+
+1 agent(s) checked: 1 error(s), 2 warning(s).</code></pre>
+    <p>Add the test to an existing project (Java or Kotlin):</p>
+    <pre><code>node scripts/add-plan-check.mjs /path/to/project com.acme.yourpackage</code></pre>
+    <p>Run the static checker without a build. It reads Java sources only, defaults to <code>src/main/java</code>, and exits 1 on errors (<code>--strict</code> also fails on warnings, <code>--json</code> prints JSON):</p>
+    <pre><code>node scripts/check-plan.mjs path/to/src/main/java</code></pre>
+  </section>
+
+  <section id="scaffold">
+    <h2>Scaffold</h2>
+    <p><code>scripts/create-project.mjs &lt;name&gt; &lt;package&gt;</code> generates a project on the <a href="https://github.com/hadirsa/embabeler/blob/main/references/VERSIONS.md">tested version combination</a>.</p>
+    <table>
+      <thead><tr><th>Option</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>--kotlin</code></td><td>Kotlin sources instead of Java</td></tr>
+        <tr><td><code>--gradle</code></td><td>Gradle build instead of Maven</td></tr>
+        <tr><td><code>--with-cookbook</code></td><td>Adds the tested pattern examples (Java only; not combinable with <code>--kotlin</code>)</td></tr>
+        <tr><td><code>--java-version 21</code></td><td>Targets Java 21</td></tr>
+        <tr><td><code>--agent-name</code>, <code>--output-dir</code>, <code>--latest</code>, <code>--dry-run</code></td><td>See the usage line of the script</td></tr>
+      </tbody>
+    </table>
+    <h3>Example prompts</h3>
+    <ul>
+      <li>"Create an Embabel agent that triages support tickets, with tests."</li>
+      <li>"Add a tool to my Embabel agent so the LLM can look up an account balance."</li>
+      <li>"My Embabel agent never reaches its goal. Why?"</li>
+      <li>"Expose this agent over MCP."</li>
+    </ul>
+  </section>
+
+  <section id="learn-more">
+    <h2>Learn more</h2>
+    <ul>
+      <li><a href="https://github.com/hadirsa/embabeler/tree/main/references">References</a>: concepts, actions, prompting, tools, domain model, workflows, testing, configuration, invoking.</li>
+      <li><a href="https://github.com/hadirsa/embabeler/blob/main/references/PITFALLS.md">Pitfalls</a>: each entry says whether it was reproduced, read from the framework source, or taken from the docs.</li>
+      <li><a href="https://github.com/hadirsa/embabeler/tree/main/examples">Examples</a>: the Java cookbook and Kotlin pitfalls.</li>
+      <li><a href="https://github.com/hadirsa/embabeler/blob/main/CHANGELOG.md">Changelog</a> and <a href="https://github.com/hadirsa/embabeler/releases">releases</a>.</li>
+      <li><a href="https://github.com/hadirsa/embabeler/blob/main/CONTRIBUTING.md">Contributing</a>.</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  Embabeler is licensed under the <a href="https://github.com/hadirsa/embabeler/blob/main/LICENSE">Apache License 2.0</a>.</footer>
+</body>
+</html>

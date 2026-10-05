@@ -5,6 +5,8 @@
 [![Embabel](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhadirsa%2Fembabeler%2Fmain%2Fversions.json&query=%24.embabelAgentVersion&label=Embabel&color=orange)](references/VERSIONS.md)
 [![Spring Boot](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fhadirsa%2Fembabeler%2Fmain%2Fversions.json&query=%24.springBootVersion&label=Spring%20Boot&color=6DB33F&logo=springboot&logoColor=white)](references/VERSIONS.md)
 
+**Documentation site: <https://hadirsa.github.io/embabeler/>**
+
 An [Agent Skill](https://agentskills.io/specification) for scaffolding, testing and plan-checking [Embabel](https://github.com/embabel/embabel-agent) agents on the JVM (Java or Kotlin, Spring Boot, Maven or Gradle). It works with Claude Code, Cursor, Copilot, Codex and other agents that load skills.
 
 - **Verified scaffold.** Generates a runnable project with an agent, domain types, a tool, and tests that need no LLM and no API key.
